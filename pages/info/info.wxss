@@ -1,0 +1,64 @@
+/* pages/info/info.wxss */
+.table-container {
+  display: block;
+  margin: 5rpx;
+
+}
+
+.day-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.day-cell {
+  width: 50%;
+  margin: 10rpx;
+  background-color: #F0F0F0
+}
+
+.day-row .day-cell:only-child{
+  width: 48%;
+}
+
+.course-table {
+  display: flex;
+  flex-direction: column;
+  border-color: #4BDC9F;
+  border-width: 2rpx;
+}
+
+.day-name {
+  border-left: solid 4px #4BDC9F;
+  background-color: rgba(0,0,0,0.2);
+  color: #F7F7F7;
+  text-align-last: center;
+  vertical-align: middle;
+  border-radius: 10rpx;
+  height: 70rpx;
+  font-weight: bold;
+}
+
+.interval{
+  display: flex;
+  flex-direction: row;
+  font-size: 35rpx;
+}
+
+.day-cell .interval:nth-child(even) {
+  background-color: rgba(0,0 ,0, 0.1);
+}
+
+.interval-name{
+   align-items: center; 
+   width: 40%;
+}
+
+.course-list{
+   align-items: center; 
+   width: 60%;
+}
+
+.operation {
+  display:flex;
+  flex-direction: row;
+}
