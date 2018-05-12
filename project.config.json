@@ -10,10 +10,14 @@
 		"minified": true,
 		"newFeature": true
 	},
+	"client": "./client",
+	"svr": "./server",
+	"miniprogramRoot": "./client",
+	"qcloudRoot": "./server",
 	"compileType": "miniprogram",
 	"libVersion": "1.9.98",
 	"appid": "wx356c13814b94acc1",
-	"projectname": "course-record",
+	"projectname": "courseRecord",
 	"isGameTourist": false,
 	"condition": {
 		"search": {

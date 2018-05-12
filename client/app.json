@@ -1,0 +1,12 @@
+{
+    "pages": [
+        "pages/info/info",
+        "pages/index/index",
+        "pages/config/config",
+        "pages/bind-phone/bind-phone"
+    ],
+    "window": {
+        "navigationBarTitleText": "课表助手",
+        "navigationBarBackgroundColor": "#4BDC9F"
+    }
+}

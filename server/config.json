@@ -1,0 +1,8 @@
+{
+    "arango_uri": "http://106.15.177.105:8529/",
+    "db": "waterDrop",
+    "courseCollection": "courseTable2",
+    "userCollection": "userIds",
+    "username": "root",
+    "password": "KingDom1234"
+}

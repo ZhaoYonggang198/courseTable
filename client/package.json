@@ -1,0 +1,15 @@
+{
+  "name": "courserecord",
+  "version": "1.0.0",
+  "description": "课表助手。这是智能音箱课表技能的助手",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.10",
+    "wafer2-client-sdk": "^1.1.1"
+  }
+}
