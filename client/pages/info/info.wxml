@@ -5,9 +5,10 @@
             wx:for-index="idx"
             wx:for-item="day"
             wx:key="{{idx}}"
-            wx:if="{{idx%2==0}}">
+            wx:if="{{idx%2==0}}" >
             <view class="day-row">
-                <view class="day-cell">
+                <view class="day-cell" id="{{idx}}" 
+                        bindlongtap="gotoEdit">
                     <view class="day-name primary_title">
                         {{day.name}}
                     </view>
@@ -32,7 +33,9 @@
                 </view>
 
                 <view class="day-cell" 
-                    wx:if="{{idx+1<courseInfo.length}}">
+                    wx:if="{{idx+1<courseInfo.length}}" id="{{idx+1}}"
+                         bindlongpress="gotoEdit" 
+                         bindlongtap="gotoEdit">
                     <view class="day-name">
                         {{courseInfo[idx+1].name}}
                     </view>

@@ -17,67 +17,90 @@ Page({
 
         modalStatus: {
             show: false,
-            label: "",
+            dayIndex: -1,
+            dayName: "",
+            intervals: {
+                index: -1,
+                list: []
+            },
             course: "",
-            pickerList: {
-                value: [-1, -1, -1],
-                days: [],
-                intervals: [],
-                courses: []
+            courses: {
+                index: -1,
+                list: []
             }
         }
     },
 
-    getPickerList: function (curDay, curInterval, curCourse) {
+    updateModalStatus: function(curDay, interval) {
+        const courseInfo = this.data.courseInfo
+        this.setData({
+            modalStatus: {
+                show: true,
+                dayIndex: curDay,
+                dayName: courseInfo[curDay].name,
+                intervals: this.getIntervalList(curDay, interval),
+                course: "",
+                courses: this.getCourseList()
+            }
+        })
+    },
+
+    getIntervalList: function(curDay, interval) {
+        var intervals = {
+            index: interval,
+            list: []
+        }
+
+        let day = this.data.courseInfo[curDay]
+        for (let intervalIdx in day.interval) {
+            let interval = day.interval[intervalIdx]
+
+            intervals.list.push(interval.name)
+        }
+        
+
+        return intervals
+    },
+
+    getCourseList: function () {
         var pickerList = {
-            value: [curDay, curInterval, -1],
-            days: [],
-            intervals: [],
-            courses: [""]
+            index: 0,
+            list: ["手工输入课程"]
         }
 
         for (let dayIdx in this.data.courseInfo) {
             let day = this.data.courseInfo[dayIdx]
-            pickerList.days.push(day.name)
             for (let intervalIdx in day.interval) {
                 let interval = day.interval[intervalIdx]
-                if (pickerList.intervals.indexOf(interval.name) == -1) {
-                    pickerList.intervals.push(interval.name)
-                }
 
                 for (let courseIdx in interval.course) {
                     let course = interval.course[courseIdx]
-                    if (pickerList.courses.indexOf(course) == -1) {
-                        pickerList.courses.push(course);
+                    if (pickerList.list.indexOf(course) == -1) {
+                        pickerList.list.push(course);
                     }
                 }
             }
         }
-
-        pickerList.courses.sort(function (lhs, rhs) { return lhs > rhs })
-
-        for (let courseIdx in pickerList.courses) {
-            let course = pickerList.courses[courseIdx]
-
-            let foundIdx = course.indexOf(curCourse)
-            if (foundIdx == 0) {
-                pickerList.value[2] = courseIdx
-                break
-            }
-        }
-
         return pickerList
+    },
 
+    intervalChange(e){
+        this.data.modalStatus.intervals.index = e.detail.value
+        this.setData({
+            modalStatus: this.data.modalStatus
+
+        })        
     },
 
     pickerChange(e) {
         const val = e.detail.value
 
         var modalStatus = this.data.modalStatus
-        const pickerList = modalStatus.pickerList
-        modalStatus.label = pickerList.days[val[0]] + " " + pickerList.intervals[val[1]]
-        modalStatus.course = pickerList.courses[val[2]]
-        modalStatus.pickerList.value = val
+
+        modalStatus.courses.index = val
+        if(val != 0) {
+            modalStatus.course = modalStatus.courses.list[val]
+        }
 
         this.setData({
             modalStatus: modalStatus
@@ -87,7 +110,7 @@ Page({
 
     courseInput(e) {
         const val = e.detail.value
-        const regex = /^(\w|[\u4E00-\u9FA5])*$/
+        const regex = /^(\w|[\u4E00-\u9FA5])|.|&*$/
         var modalStatus = this.data.modalStatus
         modalStatus.course = val
         modalStatus.error = !regex.test(val)
@@ -97,20 +120,13 @@ Page({
 
     },
 
-    dayToggle(e) {
-        var courseInfo = this.data.courseInfo
+    dataEdit(e) {
+        
+        var curDay = e.currentTarget.id
         if (e.target.id == "add") {
-
-            this.setData({
-                modalStatus: {
-                    show: true,
-                    label: courseInfo[e.currentTarget.id].name + " 上午",
-                    course: "",
-                    pickerList: this.getPickerList(e.currentTarget.id, 0, "")
-                }
-            })
+            this.updateModalStatus(curDay, 0)
         } else {
-
+            var courseInfo = this.data.courseInfo
             courseInfo[e.currentTarget.id].open = !courseInfo[e.currentTarget.id].open
             this.setData(
                 {
@@ -139,7 +155,21 @@ Page({
     /**
      * 对话框取消按钮点击事件
      */
+    showSomeDayCourse: function(day) {
+        var courseInfo = this.data.courseInfo
+        for(var idx in courseInfo) {
+            courseInfo[idx].open = false
+        }
+        courseInfo[day].open = true
+        this.setData(
+            {
+                courseInfo: courseInfo
+            }
+        )
+    },
+
     onCancel: function () {
+        this.showSomeDayCourse(this.data.modalStatus.dayIndex)
         this.hideModal();
     },
     /**
@@ -149,13 +179,14 @@ Page({
         const modalStatus = this.data.modalStatus
         if (!modalStatus.error){
             console.log(this.data.modalStatus)
-            const dayIdx = modalStatus.pickerList.value[0]
-            const intervalIdx = modalStatus.pickerList.value[1]
+            const dayIdx = modalStatus.dayIndex
+            const intervalIdx = modalStatus.intervals.index
             const course = modalStatus.course
             this.data.courseInfo[dayIdx].interval[intervalIdx].course.push(course)
             this.setData({
                 courseInfo: this.data.courseInfo
             })
+            this.updateModalStatus(dayIdx, intervalIdx)
             wx.showToast({
                 icon: 'success',
                 title: `课程已添加`,
@@ -172,36 +203,7 @@ Page({
         let course = dataset.course
 
         if (e.target.id === "delete") {
-            this.data.courseInfo[day].interval[interval].course.splice(course, 1);
-            this.setData({
-                courseInfo: this.data.courseInfo
-            }
-            )
-        }
-        else {
-            let current = this.data.readyToDel
-
-            if (day == current.day
-                && interval == current.interval
-                && course == current.course) {
-                this.setData({
-                    readyToDel: {
-                        day: -1,
-                        interval: -1,
-                        course: -1
-                    }
-                })
-            }
-            else {
-                this.setData({
-                    readyToDel: {
-                        day: day,
-                        interval: interval,
-                        course: course
-                    }
-                })
-            }
-
+            this.deleteCourse(day, interval, course)
         }
     },
 
@@ -242,13 +244,21 @@ Page({
 
     },
 
-    formSubmit: function (e) {
-        console.log('form发生了submit事件，携带数据为：', e.detail.value)
-    },
-    formReset: function () {
-        console.log('form发生了reset事件')
+    deleteCourse: function(day, interval, course){
+        this.data.courseInfo[day].interval[interval].course.splice(course, 1);
+        this.setData({
+            courseInfo: this.data.courseInfo
+        }
+        )
     },
 
+    deleteCurdayCourse: function(ev) {
+        var dataset = ev.currentTarget.dataset
+        let day = dataset.day
+        let interval = dataset.interval
+        let course = dataset.course
+        this.deleteCourse(day, interval, course)
+    },
     /**
      * 生命周期函数--监听页面加载
      */
@@ -257,6 +267,11 @@ Page({
 
             courseInfo: getApp().globalData.courseInfo
         })
+
+        if(options.day !== undefined)
+        {
+            this.updateModalStatus(options.day, 0)
+        }
     },
 
     /**

@@ -6,7 +6,7 @@
         <form bindsubmit="formSubmit" bindreset="formReset">
             <block wx:for="{{courseInfo}}" wx:for-index="dayIdx" wx:for-item="day" wx:key="{{dayIdx}}">
                 <view class="kind-list__item">
-                    <view id="{{dayIdx}}" class="weui-flex kind-list__item-hd primary_title {{day.open ? 'kind-list__item-hd_show' : ''}}" bindtap="dayToggle">
+                    <view id="{{dayIdx}}" class="weui-flex kind-list__item-hd primary_title {{day.open ? 'kind-list__item-hd_show' : ''}}" bindtap="dataEdit">
                         <view class="weui-flex__item">{{day.name}}</view>
 
                         <block wx:if="{{day.open}}">
@@ -47,20 +47,54 @@
 
     <view class="modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{modalStatus.show}}"></view>
     <view class="modal-dialog" wx:if="{{modalStatus.show}}">
-        <view class="modal-title">添加课程</view>
+        <view class="modal-title">添加{{modalStatus.dayName}}课程</view>
         <view class="modal-content">
+
+            <view wx:for="{{courseInfo[modalStatus.dayIndex].interval}}" wx:for-item="interval" wx:for-index="intervalIdx" wx:key="{{intervalIdx}}">
+                <view class="weui-cells__title">{{interval.name}}</view>
+                <view class="weui-cells weui-cells_after-title">
+                    <view class="weui-cell course-list-wrapper">
+                        <view class="course-list">
+                            <block wx:for="{{interval.course}}" wx:for-item="course" wx:for-index="courseIdx" wx:key="{{course}}">
+
+                                <button 
+                                    data-day="{{modalStatus.dayIndex}}" 
+                                    data-interval="{{intervalIdx}}"
+                                    data-course="{{courseIdx}}"
+                                    class="delete"
+                                    bindtap="deleteCurdayCourse">
+                                            {{course}} x
+                                </button>
+        
+                            </block>
+                        </view>
+
+                    </view>
+                </view>
+            </view>
+
             <view class="weui-cell">
                 <view class="weui-cell__hd">
                     <view class="weui-label">时段</view>
                 </view>
                 <view class="weui-cell__bd">
-                    {{modalStatus.label}}
+                    <radio-group class="radio-group" bindchange="intervalChange">
+                        <radio class="radio" 
+                            wx:for="{{modalStatus.intervals.list}}"
+                            wx:for-index="intervalIdx" 
+                            wx:for-item="interval" 
+                            wx:key="{{intervalIdx}}" 
+                            value="{{intervalIdx}}"
+                            checked="{{intervalIdx==modalStatus.intervals.index}}">
+                        <text>{{interval}}</text>
+                        </radio>
+                    </radio-group>
                 </view>
 
             </view>
             <view class="weui-cell weui-cell_input {{modalStatus.error?'weui-cell_warn':''}}">
                 <view class="weui-cell__hd">
-                    <view class="weui-label">课程</view>
+                    <view class="weui-label">课程名</view>
                 </view>
                 <view class="weui-cell__bd">
                     <input class="weui-input" placeholder="请输入课程" value="{{modalStatus.course}}" bindinput="courseInput"/>
@@ -69,17 +103,21 @@
                     <icon type="warn" size="23" color="#E64340"></icon>
                 </view>
             </view>
-            <picker-view indicator-style="height: 50px;" style="width: 100%; height: 500rpx;" value="{{modalStatus.pickerList.value}}" bindchange="pickerChange">
-                <picker-view-column>
-                    <view wx:for="{{modalStatus.pickerList.days}}" style="line-height: 50px">{{item}}</view>
-                </picker-view-column>
-                <picker-view-column>
-                    <view wx:for="{{modalStatus.pickerList.intervals}}" style="line-height: 50px">{{item}}</view>
-                </picker-view-column>
-                <picker-view-column>
-                    <view wx:for="{{modalStatus.pickerList.courses}}" style="line-height: 50px">{{item}}</view>
-                </picker-view-column>
-            </picker-view>
+            <view class="weui-cell">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">选择</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="pickerChange" value="{{modalStatus.courses.index}}" range="{{modalStatus.courses.list}}">
+                        <view class="picker">
+                        备选课程
+                        </view>
+                    </picker>
+                </view>
+
+            </view>
+
+
 
         </view>
         <view class="modal-footer">

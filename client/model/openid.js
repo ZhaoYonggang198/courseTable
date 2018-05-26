@@ -9,8 +9,8 @@ var requestWXOpenid = function () {
                 wx.request({
                     url: `${service.openIdUrl}?code=${loginResult.code}`,
                     success: function (res) {
-                        if (res.data.data) {
-                            openId = res.data.data.openid
+                        if (res.data) {
+                            openId = res.data.openid
                             resolve(openId)
                         }
                         else

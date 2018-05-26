@@ -7,6 +7,10 @@
     ],
     "window": {
         "navigationBarTitleText": "课表助手",
-        "navigationBarBackgroundColor": "#4BDC9F"
+        "navigationBarTextStyle": "white",
+        "navigationBarBackgroundColor": "#0097A7",
+        "enablePullDownRefresh": true,
+        "backgroundColor": "#0097A7",
+        "backgroundTextStyle": "light"
     }
 }

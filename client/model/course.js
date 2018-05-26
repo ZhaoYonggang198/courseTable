@@ -20,6 +20,14 @@ var weekdays = [
     {
         backend: "friday",
         frontend: "星期五"
+    }, 
+    {
+        backend: "saturday",
+        frontend: "星期六"
+    },
+    {
+        backend: "sunday",
+        frontend: "星期日"
     }
 ]
 
@@ -31,6 +39,10 @@ var intervals = [
     {
         backend: "afternoon",
         frontend: "下午"
+    },
+    {
+        backend: "evening",
+        frontend: "晚上"
     }
 ]
 

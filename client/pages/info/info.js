@@ -19,6 +19,12 @@ Page({
     })
   },
 
+  gotoEdit: function (ev) {
+    wx.navigateTo({
+        url: `/pages/config/config?day=${ev.currentTarget.id}`
+    })
+  },
+
   bindPhone: function () {
       wx.navigateTo({
           url: '/pages/bind-phone/bind-phone'

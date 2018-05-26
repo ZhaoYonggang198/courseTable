@@ -121,3 +121,20 @@ input-holder {
   color: #ec5300;
   text-align: center;
 }
+
+button.delete {
+    font-size: 25rpx;
+    padding: 2px;
+    margin-right: 4rpx;
+    border-radius: 20rpx;
+}
+
+.course-list-wrapper {
+    padding: 5px;
+}
+
+.course-list {
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+}
